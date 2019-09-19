@@ -1,0 +1,72 @@
+/* Lambda.jj Doing lambda calculus operations */
+//Header
+options {
+	STATIC=false;
+	LOOKAHEAD = 3;
+}
+
+PARSER_BEGIN(Lambda)
+
+ class Lambda {
+
+ static void main( String args[]) throws ParseException, TokenMgrError{
+
+Lambda parser = new Lambda(System.in);
+
+parser.Start(); }
+}
+PARSER_END(Lambda)
+
+//Tokens
+
+SKIP: { <"\n" 
+| "\r" 
+| "\t" > }
+
+TOKEN: { <LAMBDA: "^" > }
+TOKEN: { <DOT: "." > }
+TOKEN: { <OPEN: "(" > }
+TOKEN: { <CLOSE: ")" > }
+TOKEN: { <VAR: (["a"-"z"])> }
+TOKEN: { <EXPR: (["a"-"z"]) | (["0"-"9"]) >}
+
+
+//Grammar
+Void Start () :
+{}
+{
+( expr()
+|<VAR> "=="  <EXPR>
+|<OPEN><LAMBDA><VAR><DOT><EXPR><CLOSE><EXPR>
+|<OPEN><LAMBDA><VAR><DOT><EXPR><EXPR><CLOSE><EXPR>
+|<EXPR><EXPR>
+
+)
+}
+
+ double expr():
+{
+}
+{
+    term()(expr())<EXPR>
+}
+double term():
+{
+}
+{
+    term1()(term())<EXPR>
+}
+double term1():
+{
+}
+{
+    element()
+}
+double element():
+{
+}
+{
+   ( <LAMBDA><VAR><DOT><EXPR> | <LAMBDA><VAR><DOT><EXPR><EXPR> | "("expr()")"
+
+)*<EOF>
+}
